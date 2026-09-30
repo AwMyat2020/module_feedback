@@ -1,0 +1,28 @@
+{
+  "name": "module-feedback-insight",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Module Insight - local module feedback and privacy-protected sample analytics",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test tests/routes.test.mjs",
+    "test:api": "python -m unittest discover -s server/tests -v",
+    "dev:api": "python server/server.py"
+  },
+  "dependencies": {
+    "lucide-react": "^1.47.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router": "^8.4.0",
+    "recharts": "^3.10.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.0"
+  }
+}
