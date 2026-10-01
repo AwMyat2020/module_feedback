@@ -61,7 +61,7 @@ class AdminTests(unittest.TestCase):
     # --- role gate -------------------------------------------------------
     def test_student_and_staff_are_forbidden_on_every_admin_route(self):
         for route in ['/api/admin/overview', '/api/admin/modules', '/api/admin/users',
-                      '/api/admin/health', '/api/admin/trimesters',
+                      '/api/admin/trimesters',
                       '/api/admin/modules/m1/roster', '/api/admin/modules/m1/reminders']:
             for user in (self.student, self.staff):
                 self.rejected(403, route=route, user=user)
@@ -82,7 +82,6 @@ class AdminTests(unittest.TestCase):
         payloads = [self.call(route='/api/admin/overview')[1],
                     self.call(route='/api/admin/modules')[1],
                     self.call(route='/api/admin/users')[1],
-                    self.call(route='/api/admin/health')[1],
                     self.call(route='/api/admin/modules/m1/roster')[1],
                     self.call(route='/api/admin/modules/m1/reminders', body={})[1]]
         for payload in payloads:
@@ -223,14 +222,7 @@ class AdminTests(unittest.TestCase):
         self.assertEqual(status, 201)
         self.assertIn(payload['trimester']['id'], [t['id'] for t in self.call(route='/api/admin/trimesters')[1]['trimesters']])
 
-    # --- health and auditing ---------------------------------------------
-    def test_health_reports_api_and_database(self):
-        payload = self.call(route='/api/admin/health')[1]['health']
-        self.assertEqual(payload['api']['status'], 'healthy')
-        self.assertEqual(payload['database']['status'], 'healthy')
-        self.assertTrue(payload['database']['trimester_configured'])
-        self.assertGreaterEqual(payload['database']['users'], 8)
-
+    # --- directory and auditing ------------------------------------------
     def test_directory_lists_every_role(self):
         payload = self.call(route='/api/admin/users')[1]
         self.assertEqual(payload['counts'], {'student': 6, 'staff': 1, 'admin': 1})
@@ -245,6 +237,8 @@ class AdminTests(unittest.TestCase):
 
     def test_unknown_admin_route_and_method(self):
         self.assertIsNone(self.call(route='/api/admin/nope'))
+        # The removed system-health route must no longer resolve.
+        self.assertIsNone(self.call(route='/api/admin/health'))
         self.rejected(405, route='/api/admin/users', method='DELETE')
 
     def test_unknown_route_is_unresolved_even_without_an_active_trimester(self):

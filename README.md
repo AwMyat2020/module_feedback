@@ -67,13 +67,14 @@ Use the password you chose during setup; no fixed sample password is stored in t
 
 Module codes, curriculum, names and trimester dates are illustrative fixtures, not official SIT records. Analytics respondent fixtures cannot log in.
 
-Registration assigns roles by exact domain: `sit.singaporetech.edu.sg` → student; `singaporetech.edu.sg` → staff. Other domains are rejected. There is no administrator domain, so the role cannot be obtained by registering: the sample administrator is promoted locally during setup, and any other account is promoted the same way.
+Registration assigns roles by exact domain: `sit.singaporetech.edu.sg` → student; `singaporetech.edu.sg` → staff. Other domains are rejected. There is no administrator domain, so the role cannot be obtained by registering on the web.
+Instead, the demo.admin@singaporetech.edu.sg account is automatically seeded and promoted to the Administrator role whenever you run python server/sample_data.py.
 
+You can also manually promote or demote other registered accounts locally via the terminal:
 ```powershell
 python server/sample_data.py --promote-admin your.name@singaporetech.edu.sg
 python server/sample_data.py --demote your.name@singaporetech.edu.sg
 ```
-
 Promotion revokes the account's sessions and clears its module assignments, so sign in again afterwards. New accounts have no module assignments. Add assignments locally after registration:
 
 ```powershell
@@ -89,6 +90,8 @@ The command also works for registered staff. Valid sample module IDs: `cloud`, `
 **Staff:** login → teaching modules → analytics. View totals, sentiment percentages, top-five themes, weekly counts and illustrative comments. Filter by theme, sentiment and teaching week. Only assigned module endpoints are accessible. Staff responses exclude student identity metadata and submission IDs/timestamps; no raw-comment endpoint bypasses suppression.
 
 Analytics is **sample analysis, not ML**. New submissions remain unanalysed; editing invalidates old analysis. Sentiment percentages use labelled matching responses. Theme mention percentages use all submitted matching responses, not all enrolled students. Fewer than five responses suppresses detailed module/filter/theme/week results. Comments additionally require five in the combined theme/sentiment/week cohort.
+
+**Administrator:** login → admin dashboard. View active module counts and privacy-protected AI sentiment anomaly alerts (raw feedback and student identities are strictly hidden). Manage the global active trimester, create new modules, extend module deadlines, and manage user assignment rosters. Administrators cannot submit or read individual feedback.
 
 ## Local data
 

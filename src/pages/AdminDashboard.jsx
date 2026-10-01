@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Bell, Database, RefreshCw, Server, TriangleAlert } from 'lucide-react';
+import { Bell, RefreshCw, TriangleAlert } from 'lucide-react';
 import { useAuth } from '../auth/useAuth.js';
 import { useCoreData, dateLabel } from '../services/coreService.js';
 import { useAdminAction, modulePath, rateLabel } from '../services/adminService.js';
@@ -8,41 +8,6 @@ import { Card, CardHeader } from '../components/ui/Card.jsx';
 import Button from '../components/ui/Button.jsx';
 import { EmptyState } from '../components/ui/States.jsx';
 import { ActionNotice, AlertBadge, MetricTile, StateBadge } from '../components/admin/AdminUi.jsx';
-
-function SystemHealth() {
-  const { data, error, refresh } = useCoreData('/api/admin/health');
-  const health = data?.health;
-  const rows = [
-    { label: 'API', icon: Server, status: error ? 'unavailable' : health?.api?.status, detail: error ? 'The local API did not respond.' : health?.api?.detail },
-    { label: 'Database', icon: Database, status: error ? 'unknown' : health?.database?.status,
-      detail: health?.database?.status === 'healthy'
-        ? `Responded in ${health.database.latency_ms} ms · ${health.database.users} accounts · ${health.database.modules} modules`
-        : 'The local database did not answer.' },
-  ];
-  return <Card>
-    <CardHeader title="System health" description="Live check of the local API and database."
-      actions={<Button variant="secondary" size="sm" icon={RefreshCw} onClick={refresh}>Check again</Button>} />
-    <div className="divide-y divide-slate-100">
-      {rows.map(({ label, icon: Icon, status, detail }) => {
-        const healthy = status === 'healthy';
-        return <div key={label} className="flex items-start gap-3 px-5 py-4">
-          <span className={`mt-0.5 rounded-full p-2 ${healthy ? 'bg-positive-soft text-positive-ink' : 'bg-negative-soft text-negative-ink'}`}>
-            <Icon className="size-4" aria-hidden />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-slate-900">{label}
-              <span className={`ml-2 font-normal ${healthy ? 'text-positive-ink' : 'text-negative-ink'}`}>
-                {healthy ? 'Connected' : (status || 'Checking…')}
-              </span>
-            </p>
-            <p className="mi-muted">{detail || 'Checking…'}</p>
-          </div>
-        </div>;
-      })}
-    </div>
-    {health && <p className="mi-muted border-t border-slate-100 px-5 py-3">Checked {dateLabel(health.checked_at)}</p>}
-  </Card>;
-}
 
 function TrimesterControl({ onChange }) {
   const { data, error, refresh } = useCoreData('/api/admin/trimesters');
@@ -104,15 +69,8 @@ export default function AdminDashboard() {
       Participation and module-level alerts only. Feedback text, individual sentiment scores and themes are never sent to this dashboard.
     </p>
 
-    {/* Health and the trimester toggle render even when the overview fails, so a
-        missing trimester stays fixable from this page rather than dead-ending. */}
-    <div className="grid gap-6 lg:grid-cols-2">
-      <SystemHealth />
-      <TrimesterControl onChange={refresh} />
-    </div>
-
     {data && <>
-      <div className="mi-admin-grid mt-6">
+      <div className="mi-admin-grid">
         <MetricTile label="Active modules" value={summary.active_modules}
           hint={summary.archived_modules ? `${summary.archived_modules} archived` : 'None archived'} />
         <MetricTile label="Responses" value={summary.responses}
@@ -138,7 +96,13 @@ export default function AdminDashboard() {
           </div>)}
         </div>
       </Card>}
+    </>}
 
+    {/* Outside the data guard: /api/admin/overview returns 409 when no trimester
+        is set, and this control is the only way to fix that. */}
+    <TrimesterControl onChange={refresh} />
+
+    {data && <>
       <Card className="mt-6">
         <CardHeader title="Participation metrics" description="Response counts per module for the active trimester."
           tooltip="A reminder emails only the students who have not submitted. The list of recipients is resolved inside the database and is never shown to an administrator."

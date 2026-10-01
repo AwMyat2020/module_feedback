@@ -125,25 +125,6 @@ def module_metrics(db, term_id, now):
     return result
 
 
-def health(path, now):
-    started = time.perf_counter()
-    try:
-        with closing(connect(path)) as db:
-            users = db.execute('SELECT COUNT(*) FROM users').fetchone()[0]
-            modules = db.execute('SELECT COUNT(*) FROM modules').fetchone()[0]
-            configured = db.execute('SELECT COUNT(*) FROM app_settings WHERE id=1').fetchone()[0]
-        database = {'status': 'healthy', 'latency_ms': round((time.perf_counter() - started) * 1000, 1),
-                    'users': users, 'modules': modules, 'trimester_configured': bool(configured)}
-    except Exception:
-        # The reason is withheld on purpose: a file path or driver string in an
-        # error message is more use to an attacker than to an administrator.
-        database = {'status': 'unavailable', 'latency_ms': None, 'users': None, 'modules': None,
-                    'trimester_configured': False}
-    return 200, {'health': {'checked_at': now,
-                            'api': {'status': 'healthy', 'detail': 'Loopback API responded to this request.'},
-                            'database': database}}
-
-
 def create_module(db, user, body, term, now):
     code = text(body, 'code', 2, 16, 'Module code').upper()
     if not CODE.fullmatch(code):
@@ -304,8 +285,6 @@ def admin_request(path, user, method, url, body=None, clock=time.time):
     if method not in ('GET', 'POST'):
         raise AuthError(405, 'Method not allowed.')
     now = int(clock())
-    if route == '/api/admin/health' and method == 'GET':
-        return health(path, now)
     with closing(connect(path)) as db, db:
         # Serialise writes before reading the state they depend on, matching core.
         if method != 'GET':
