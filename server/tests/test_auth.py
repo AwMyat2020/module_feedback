@@ -95,7 +95,7 @@ class AuthenticationTests(unittest.TestCase):
         with closing(connect(self.path)) as db,db:
             db.execute("INSERT INTO trimesters VALUES ('t','Current')")
             db.execute("INSERT INTO app_settings VALUES (1,'t')")
-            db.execute("INSERT INTO modules VALUES ('m','INF2006','Cloud Computing')")
+            db.execute("INSERT INTO modules (id,code,name) VALUES ('m','INF2006','Cloud Computing')")
             db.execute('INSERT INTO feedback_periods VALUES (?,?,?,?,?)',('p','m','t',now-60,now+60))
             db.execute('INSERT INTO student_modules VALUES (?,?,?)',(student,'m','t'))
         self.assertEqual(len(self.request('/api/student/dashboard')[1]['modules']),1)

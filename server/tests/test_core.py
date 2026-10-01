@@ -24,7 +24,7 @@ class CoreTests(unittest.TestCase):
             db.execute("INSERT INTO trimesters VALUES ('current','Current'),('old','Old')")
             db.execute("INSERT INTO app_settings VALUES (1,'current')")
             for key in ['a','b']:
-                db.execute('INSERT INTO modules VALUES (?,?,?)',(key,'INF'+key,'Module '+key))
+                db.execute('INSERT INTO modules (id,code,name) VALUES (?,?,?)',(key,'INF'+key,'Module '+key))
                 db.execute('INSERT INTO feedback_periods VALUES (?,?,?,?,?)',(key,key,'current',900,1100))
             db.execute("INSERT INTO feedback_periods VALUES ('old','a','old',100,200)")
             db.executemany('INSERT INTO student_modules VALUES (?,?,?)',[('s1','a','current'),('s2','b','current'),('s1','a','old')])

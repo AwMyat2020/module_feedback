@@ -52,7 +52,10 @@ body { background:#f4f7fa; color:#142c3e; }
 .mi-auth-card input { border:1px solid #b8c6d1; border-radius:6px; min-height:46px; box-shadow:none; }
 .mi-auth-card input:focus-visible { outline:2px solid #087968; outline-offset:2px; }
 .mi-main { flex:1; width:100%; max-width:1440px; margin:auto; padding:42px 5% 70px; }
+.mi-nav { display:flex; flex-wrap:wrap; gap:10px; }
 .mi-nav a { display:block; padding:12px 15px; border-radius:6px; font-size:14px; font-weight:600; color:#087968; background:#e6f5f1; }
+/* NavLink sets aria-current on the active destination. */
+.mi-nav a[aria-current="page"] { background:#087968; color:#ffffff; }
 .mi-account { margin-left:auto; display:flex; align-items:center; gap:16px; font-size:14px; }
 .mi-secondary { background:#e6f3ef; color:#146859; border-radius:7px; padding:12px 18px; font-weight:600; cursor:pointer; }
 .mi-footer { margin:0 5%; padding:22px 0; border-top:1px solid #dbe3e9; display:flex; justify-content:space-between; gap:20px; font-size:12px; color:#5b6d7b; }
@@ -65,7 +68,7 @@ body { background:#f4f7fa; color:#142c3e; }
 .mi-dates dt { color:#5b6d7b; font-size:12px; margin-bottom:3px; }
 .mi-feedback-form { display:grid; gap:12px; margin-top:18px; }
 .mi-feedback-form label { font-weight:600; font-size:14px; }
-.mi-feedback-form textarea,.mi-feedback-form select { border:1px solid #b8c6d1; padding:12px; border-radius:6px; width:100%; background:white; }
+.mi-feedback-form textarea,.mi-feedback-form select,.mi-feedback-form input { border:1px solid #b8c6d1; padding:12px; border-radius:6px; width:100%; background:white; }
 .mi-feedback-form select { max-width:240px; }
 .mi-feedback-text { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.7; }
 .mi-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; }
@@ -78,3 +81,10 @@ body { background:#f4f7fa; color:#142c3e; }
 .mi-analytics-table { width:100%; min-width:650px; border-collapse:collapse; margin-top:18px; font-size:14px; text-align:left; }
 .mi-analytics-table th,.mi-analytics-table td { padding:12px; border-bottom:1px solid #dbe3e9; }
 .mi-analytics-table thead { background:#edf5f2; }
+
+/* Administrator area: reuses the panel geometry above; only the row layouts differ. */
+.mi-admin-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr)); gap:22px; margin-bottom:26px; }
+.mi-admin-row { display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+.mi-admin-form { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr)); gap:14px; align-items:end; }
+.mi-admin-form label { display:grid; gap:8px; font-size:14px; font-weight:600; }
+.mi-badge-pill { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:5px 9px; border-radius:5px; white-space:nowrap; }

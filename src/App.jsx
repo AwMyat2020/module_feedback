@@ -6,7 +6,9 @@ import { AUTH_HOME } from './auth/routePolicy.js';
 import LoginPage from './pages/LoginPage.jsx';
 import AuthDashboard from './pages/AuthDashboard.jsx';
 import ModuleFeedbackPage from './pages/ModuleFeedbackPage.jsx';
-import ForbiddenPage from './pages/ForbiddenPage.jsx';
+import AdminDashboard from './pages/AdminDashboard.jsx';
+import AdminModules from './pages/AdminModules.jsx';
+import AdminUsers from './pages/AdminUsers.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
 function Home() {
@@ -32,7 +34,12 @@ export default function App() {
         <Route path="/lecturer" element={<Navigate to="/staff" replace />} />
         <Route path="/lecturer/*" element={<NotFoundPage />} />
       </Route>
-      <Route path="/admin/*" element={<ForbiddenPage />} />
+      <Route element={<RequireRole roles={['admin']} />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/modules" element={<AdminModules />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/*" element={<NotFoundPage />} />
+      </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Route></Route>
   </Routes>;

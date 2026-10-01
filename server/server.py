@@ -12,6 +12,7 @@ from auth import AuthError, authenticate_account, new_session, session_user, rev
 from database import initialise
 from core import execute
 from analytics import analytics_request
+from admin import admin_request
 
 
 def make_server(path, port=8001, origin='http://127.0.0.1:5173'):
@@ -85,6 +86,17 @@ def make_server(path, port=8001, origin='http://127.0.0.1:5173'):
                     raise AuthError(401, 'Please sign in to continue.')
                 if self.command == 'GET' and route == '/api/auth/me':
                     return self.respond(200, {'user': user})
+                # Administrator prefix is gated here, ahead of every other
+                # dispatcher, so a student or staff session can never reach an
+                # admin handler regardless of what those handlers later accept.
+                if route == '/api/admin' or route.startswith('/api/admin/'):
+                    if user['role'] != 'admin':
+                        raise AuthError(403, 'Administrator access is required.')
+                    administration = admin_request(path, user, self.command, self.path,
+                                                   body if self.command == 'POST' else None)
+                    if administration is not None:
+                        return self.respond(*administration)
+                    raise AuthError(404, 'Unknown administrator endpoint.')
                 analysis = analytics_request(path, user, self.command, self.path)
                 if analysis is not None:
                     return self.respond(*analysis)

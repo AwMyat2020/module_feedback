@@ -63,9 +63,13 @@ def execute(path, user, method, route, body=None, clock=time.time):
             periods = []
             if term:
                 table = 'student_modules' if role == 'student' else 'staff_modules'
+                # Archived modules stay in the record for the administrator but
+                # drop off student and staff dashboards.
                 rows = db.execute(f'''SELECT p.id FROM feedback_periods p JOIN {table} a
                     ON a.module_id=p.module_id AND a.trimester_id=p.trimester_id
-                    WHERE a.user_id=? AND p.trimester_id=? ORDER BY p.id''', (user['userId'], term['id'])).fetchall()
+                    JOIN modules m ON m.id=p.module_id
+                    WHERE a.user_id=? AND p.trimester_id=? AND m.archived=0 ORDER BY p.id''',
+                    (user['userId'], term['id'])).fetchall()
                 periods = [describe(db, period_for(db, user, r['id']), user, now) for r in rows]
             return 200, {'trimester': dict(term) if term else None, 'modules': periods}
         period_id, feedback_id, action = match[2], match[3], match[4]

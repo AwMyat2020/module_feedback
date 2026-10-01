@@ -63,10 +63,18 @@ Use the password you chose during setup; no fixed sample password is stored in t
 | `demo.other@sit.singaporetech.edu.sg` | Student | Software Engineering |
 | `demo.staff@singaporetech.edu.sg` | Staff | Cloud, Database, Security |
 | `demo.other@singaporetech.edu.sg` | Staff | Software Engineering |
+| `demo.admin@singaporetech.edu.sg` | Administrator | None — administrators are not enrolled |
 
 Module codes, curriculum, names and trimester dates are illustrative fixtures, not official SIT records. Analytics respondent fixtures cannot log in.
 
-Registration assigns roles by exact domain: `sit.singaporetech.edu.sg` → student; `singaporetech.edu.sg` → staff. Other domains are rejected. New accounts have no module assignments. Add assignments locally after registration:
+Registration assigns roles by exact domain: `sit.singaporetech.edu.sg` → student; `singaporetech.edu.sg` → staff. Other domains are rejected. There is no administrator domain, so the role cannot be obtained by registering: the sample administrator is promoted locally during setup, and any other account is promoted the same way.
+
+```powershell
+python server/sample_data.py --promote-admin your.name@singaporetech.edu.sg
+python server/sample_data.py --demote your.name@singaporetech.edu.sg
+```
+
+Promotion revokes the account's sessions and clears its module assignments, so sign in again afterwards. New accounts have no module assignments. Add assignments locally after registration:
 
 ```powershell
 python server/sample_data.py --assign-email your.name@sit.singaporetech.edu.sg --modules cloud database security

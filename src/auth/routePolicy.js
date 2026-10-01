@@ -4,4 +4,4 @@ export function routeDecision(user, roles) {
   if (roles && !roles.includes(user.role)) return 'forbidden';
   return 'allow';
 }
-export const AUTH_HOME = { student: '/student', staff: '/staff' };
+export const AUTH_HOME = { student: '/student', staff: '/staff', admin: '/admin' };
